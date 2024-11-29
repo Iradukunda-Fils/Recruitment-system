@@ -1,0 +1,155 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Company Dashboard{% endblock %}</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.oaistatic.com/bootstrap/5.2.3/css/bootstrap.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://cdn.oaistatic.com/fonts/inter/inter.css">
+    <link rel="stylesheet" href="{% static 'css/sub-company.css' %}">
+    <link rel="stylesheet" href="{% static 'css/b-company.css' %}">
+
+    <style>
+        :root {
+            
+            --primary-color: #1a237e;
+            --primary-light: #534bae;
+            --secondary-color: #2196f3;
+            --background-color: #f8fafc;
+            --text-color: #333;
+            --primary-color: #0f766e;
+            --sidebar-width: 280px;
+            --header-height: 60px;
+            --sidebar-bg: #134e4a;
+            --content-bg: #f8fafc;
+            --card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --transition-speed: 0.3s;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- Loading Spinner -->
+    <div class="spinner-overlay" id="spinner">
+        <div class="spinner-border text-primary" role="status">
+            <span class="loading-indicator">
+                <i class="fas fa-spinner fa-spin"></i>
+            </span>
+        </div>
+    </div>
+
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <div class="mobile-header-content">
+            <button class="menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="mobile-logo">
+                {% if user.company.logo %}
+                    <img src="{{ user.company.logo.url }}" alt="{{ user.company.name }}" height="40">
+                {% endif %}
+            </div>
+            <div class="mobile-actions">
+                <a href="{% url 'settings' %}" class="btn btn-link">
+                    <i class="fas fa-cog"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="company-profile">
+                {% if user.company.logo %}
+                    <img src="{{ user.company.logo.url }}" alt="{{ user.company.name }}" class="company-logo">
+                {% else %}
+                    <img src="{% static 'images/default-company-logo.png' %}" alt="Default Logo" class="company-logo">
+                {% endif %}
+                <h2 class="company-name">{{ user.company.name }}</h2>
+                <p class="company-type">{{ user.company.comp_info.industry }}</p>
+            </div>
+        </div>
+
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="{% if request.resolver_match.url_name == 'company-home' %}active{% endif %}">
+                    <a href="{% url 'company-home' %}">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="{% if request.resolver_match.url_name == 'manage-users' %}active{% endif %}">
+                    <a href="{% url 'manage-users' %}">
+                        <i class="fas fa-users"></i>
+                        <span>Users</span>
+                    </a>
+                </li>
+                <li class="{% if request.resolver_match.url_name == 'job-list' %}active{% endif %}">
+                    <a href="{% url 'job-list' %}">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Jobs</span>
+                    </a>
+                </li>
+                <li class="{% if request.resolver_match.url_name == 'analytic' %}active{% endif %}">
+                    <a href="{% url 'analytic' %}">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+                <li class="{% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
+                    <a href="{% url 'settings' %}">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'logout' %}">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <form action="" method="post">
+            {% csrf_token %}
+            <button class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="left" title="Post New Job">
+                <i class="fas fa-plus"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.oaistatic.com/jquery/3.6.0/jquery.min.js" defer></script>
+    <script src="https://cdn.oaistatic.com/popper.js/2.11.6/umd/popper.min.js" defer></script>
+    <script src="https://cdn.oaistatic.com/bootstrap/5.2.3/js/bootstrap.bundle.min.js" defer></script>
+    <script src="{% static 'javascript/b-company.js' %}" defer></script>
+

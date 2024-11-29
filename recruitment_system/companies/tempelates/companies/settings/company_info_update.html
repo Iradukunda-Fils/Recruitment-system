@@ -1,0 +1,229 @@
+{% extends 'base_company.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        .update-form-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-header h3 {
+            color: #2d3748;
+            font-size: 1.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4299e1, #667eea);
+            transition: width 0.3s ease;
+            width: 0;
+        }
+
+        .form-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-section {
+            background: #f7fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            transition: transform 0.2s ease;
+        }
+
+        .form-section:hover {
+            transform: translateY(-2px);
+        }
+
+        .form-section h4 {
+            color: #4a5568;
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .alert-success {
+            background-color: #c6f6d5;
+            color: #2f855a;
+        }
+
+        .alert-error {
+            background-color: #fed7d7;
+            color: #c53030;
+        }
+
+        .btn-submit {
+            background: linear-gradient(90deg, #4299e1, #667eea);
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(66, 153, 225, 0.2);
+        }
+
+        .loading-indicator {
+            display: none;
+        }
+
+        .form-submitting .loading-indicator {
+            display: inline-block;
+        }
+
+        .form-control {
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 0.75rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-control:focus {
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+            outline: none;
+        }
+
+        @media (max-width: 768px) {
+            .update-form-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="update-form-container animate__animated animate__fadeIn">
+        <div class="form-header">
+            <h3>Update Company Information</h3>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-bar-fill"></div>
+        </div>
+
+        <!-- {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} animate__animated animate__fadeIn">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %} -->
+
+        <form method="post" id="companyUpdateForm" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-sections">
+                <!-- Basic Information Section -->
+                <div class="form-section animate__animated animate__fadeInUp">
+                    <h4>Basic Information</h4>
+                    {{ form.company_owner|as_crispy_field }}
+                    {{ form.industry|as_crispy_field }}
+                    {{ form.phone_number|as_crispy_field }}
+                </div>
+
+                <!-- Company Details Section -->
+                <div class="form-section animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+                    <h4>Company Details</h4>
+                    {{ form.established|as_crispy_field }}
+                    {{ form.revenue|as_crispy_field }}
+                </div>
+
+                <!-- Additional Information Section -->
+                <div class="form-section animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                    <h4>Additional Information</h4>
+                    {{ form.founded_by|as_crispy_field }}
+                    {{ form.website|as_crispy_field }}
+                </div>
+            </div>
+
+            <!-- Description Section -->
+            <div class="form-section animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+                <h4>Company Description</h4>
+                {{ form.description|as_crispy_field }}
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn-submit">
+                    Update
+                    <span class="loading-indicator">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('companyUpdateForm');
+            const progressBar = document.querySelector('.progress-bar-fill');
+            
+            // Calculate form progress
+            function updateProgress() {
+                const inputs = form.querySelectorAll('input, select, textarea');
+                const filledInputs = Array.from(inputs).filter(input => input.value.trim() !== '');
+                const progress = (filledInputs.length / inputs.length) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+
+            // Add input listeners
+            form.querySelectorAll('input, select, textarea').forEach(input => {
+                input.addEventListener('input', updateProgress);
+            });
+
+            // Form submission handling
+            form.addEventListener('submit', function(e) {
+                form.classList.add('form-submitting');
+            });
+
+            // Initial progress calculation
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
+{% endblock content %}

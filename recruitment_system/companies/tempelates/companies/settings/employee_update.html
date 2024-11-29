@@ -1,0 +1,71 @@
+{% extends 'base_company.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 20px auto;
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h3 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
+    .form-group {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        margin-top: 10px;
+        padding: 10px;
+        transition: all 0.3s ease;
+    }
+    .form-group:hover {
+        border-color: #999;
+    }
+    .btn-primary {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 16px;
+        margin-top: 15px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+    .invalid-feedback {
+        color: red;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="form-container">
+    <h3>Employee Update</h3>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                {{ field|as_crispy_field }}
+                {% if field.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in field.errors %}
+                            {{ error }}<br>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn-primary">Update</button>
+    </form>
+</div>
+{% endblock content %}

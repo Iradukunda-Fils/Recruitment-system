@@ -1,0 +1,133 @@
+{% extends 'base_company.html' %}
+{% block content %}
+
+
+<div class="page-header">
+    <h3>This is job Listing</h3>
+</div>
+
+<div class="content-section">
+    <div class="search-section">
+        <form method="get" action="{% url 'job-list' %}" class="search-form">
+            <div class="search-input-group">
+                <input type="text" name="q" class="search-input" placeholder="Search jobs by title, location, or keywords..." value="{{ request.GET.q }}">
+            </div>
+            <button type="button" class="btn btn-secondary" id="toggleFilters">
+                <i class="fas fa-filter"></i> Filters
+            </button>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i> Search
+            </button>
+            
+            <div class="filters-row" id="filtersRow">
+                <select name="employment_type" class="filter-select">
+                    <option value="">Employment Type</option>
+                    <option value="full_time">Full Time</option>
+                    <option value="part_time">Part Time</option>
+                    <option value="contract">Contract</option>
+                </select>
+                
+                <select name="job_level" class="filter-select">
+                    <option value="">Job Level</option>
+                    <option value="entry">Entry Level</option>
+                    <option value="mid">Mid Level</option>
+                    <option value="senior">Senior Level</option>
+                </select>
+                
+                <select name="location" class="filter-select">
+                    <option value="">Location</option>
+                    {% for location in locations %}
+                    <option value="{{ location }}">{{ location }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+
+        
+        
+        {% if not jobs %}
+        <div class="empty-state">
+            <i class="fas fa-briefcase"></i>
+            <p>No job listings available at the moment. Please check back later.</p>
+        </div>
+        {% else %}
+        <div class="grid-container">
+            {% for job in jobs %}
+            <div class="card">
+                <div class="card-header">
+                    <h3>{{ job.title }}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="job-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Posted:</div>
+                            <span>{{ job.posted_date|date:"F d, Y" }}</span>
+                        </div>
+                        
+                        <div class="meta-item">
+                            <div class="meta-label"><strong>Salary: </strong></div>
+                            <span class="cost">${{ job.salary }}</span>
+                        </div>
+                        
+                        <div class="meta-item">
+                            <div class="meta-label">Employment Type:</div>
+                            <span>{{ job.employment_type }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Job Level:</div>
+                            <span>{{ job.job_level }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Function:</div>
+                            <span>{{ job.job_function }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Location:</div>
+                            <span>{{ job.location }}</span>
+                        </div>
+
+                        <div class="meta-item">
+                            {% if job.is_expired %}
+                            <span class="status-badge status-expired">
+                                <i class="fas fa-clock mr-1"></i> Expired
+                            </span>
+                            {% elif job.is_active %}
+                            <span class="status-badge status-active">
+                                <i class="fas fa-check-circle mr-1"></i> Active
+                            </span>
+                            {% else %}
+                            <span class="status-badge status-inactive">
+                                <i class="fas fa-pause-circle mr-1"></i> Inactive
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="deadline-info {% if job.is_expired %}expired{% else %}active{% endif %}">
+                        <i class="fas {% if job.is_expired %}fa-calendar-times{% else %}fa-calendar-check{% endif %}"></i>
+                        {% if job.is_expired %}
+                        Deadline Passed: {{ job.application_deadline|date:"F d, Y" }}
+                        {% else %}
+                        Apply by: {{ job.application_deadline|date:"F d, Y" }}
+                        {% endif %}
+                    </div>
+                    <div class="actions">
+                        <a href="{% url 'job-detail' pk=job.id %}" class="btn btn-primary">
+                            <i class="fas fa-eye"></i>
+                            View Details
+                        </a>
+                        <a href="{% url 'job-delete' pk=job.id %}" class="btn btn-danger" >
+                            <i class="fas fa-trash"></i>
+                            Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %} 
+
+{% endblock content %}

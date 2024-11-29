@@ -1,0 +1,35 @@
+{% extends 'base_company.html' %}
+{% block content %}
+
+    <div class="main-content" id="home">
+        <h1>Hello, {{ user.first_name }}</h1>
+        <h2 >Your welcome back to your admin dashboard..!</h2>
+        <h3>
+            Use the sidebar to manage users, jobs, and analytics.
+        </h3>
+        <br><br>
+        <div class="grid-container">
+            <div class="card --bs-dark-rgb">
+                <h3>Total Users</h3>
+                <p>100</p>
+                <button>Manage Users</button>
+            </div>
+            <div class="card">
+                <h3>Applications Submitted</h3>
+                <p>250</p>
+                <button>View Analytics</button>
+            </div>
+            <div class="card">
+                <h3>Job Listings</h3>
+                <p>10 Active Listings</p>
+                <button>Manage Listings</button>
+            </div>
+            <div class="card">
+                <h3>Pending Actions</h3>
+                <p>5 Notifications</p>
+                <button>View Notifications</button>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

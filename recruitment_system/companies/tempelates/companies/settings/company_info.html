@@ -1,0 +1,121 @@
+{% extends 'base_company.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        
+    </style>
+</head>
+<body>
+    <div class="company-profile-data">
+        
+        <div class="company-header-data">
+            <h1 class="company-name-data">
+                <a href="{{ user.company.logo.url }}" style="text-decoration: none;">
+                    <img src="{{ user.company.logo.url }}" alt="Branch Image" class="img-fluid rounded-circle" style="width: 40px; height: 40px;">
+                </a> 
+                {{ info.company.name }}</h1>
+            <div class="company-meta-data">
+                <div class="meta-item-data">
+                    <i class="fas fa-calendar"></i>
+                    <span>Joined: {{ info.company.created_at|date:"b, d-Y" }}</span>
+                </div>
+                <div class="meta-item-data">
+                    <i class="fas fa-clock"></i>
+                    <span>Last Updated: {{ info.company.updated_at|date:"b, d-Y, h:i A" }}</span>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="info-grid-data">
+            <div class="info-card-data">
+                <div class="info-label-data">Email</div>
+                <div class="info-value-data">{{ info.email }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label-data">Phone Number</div>
+                <div class="info-value-data">{{ info.phone_number }}</div>
+            </div>
+            <div class="info-card-data">
+                <div class="info-label-data">Headquarters</div>
+                <div class="info-value-data">{{ info.headquarters }}</div>
+            </div>
+            <div class="info-card-data">
+                <div class="info-label-data">Industry</div>
+                <div class="profile-image text-left mb-3">
+            <a href="{{ info.company_owner.url }}" style="text-decoration: none;">
+                <img src="{{ info.company_owner.url }}" alt="Owner Image" class="img-fluid rounded-circle" style="width: 150px; height: 150px;">
+            </a>
+        </div>
+                <div class="info-value-data">{{ info.industry }}</div>
+            </div>
+            <div class="info-card-data">
+                <div class="info-label-data">Founded</div>
+                <div class="info-value-data">{{ info.established|date:"F d, Y" }}</div>
+            </div>
+            <div class="info-card-data">
+                <div class="info-label-data">Founded By</div>
+                <div class="info-value-data">{{ info.founded_by }}</div>
+            </div>
+            <div class="info-card-data">
+                <div class="info-label-data">Employees</div>
+                <div class="info-value-data">{{ info.employees }}</div>
+            </div>
+            <div class="info-card-data">
+                <div class="info-label-data">Revenue</div>
+                <div class="info-value-data">{{ info.revenue }}</div>
+            </div>
+            <div class="info-card-data">
+                <div class="info-label-data">Website</div>
+                <div class="info-value-data">
+                    {% if info.website %}
+                        <a href="{{ info.website }}" target="_blank" class="text-blue-600 hover:underline">
+                            {{ info.website }}
+                        </a>
+                    {% else %}
+                        No Site Available
+                    {% endif %}
+                </div>
+            </div>
+            <div class="info-card-data">
+                <div class="info-label-data">Branches</div>
+                <div class="info-value-data">{{ info.number_of_branches }}</div>
+            </div>
+        </div>
+
+        <div class="description-section-data">
+            <h2 class="info-label">Description</h2>
+            <div class="description-content-data">{{ info.description }}</div>
+        </div>
+
+        <div class="branches-section-data">
+            <h2 class="info-label-data">Branch Locations</h2>
+            <div class="branch-list-data">
+                {% for branch in info.company.c_branches.all %}
+                    <div class="branch-card-data">
+                        <div class="branch-name-data">{{ branch.name }}</div>
+                        <div class="branch-location-data">{{ branch.location }}</div>
+                    </div>
+                {% empty %}
+                    <div class="branch-card-data">
+                        <div class="branch-name-data">No branches available</div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="button-group-data">
+            <a href="{% url 'settings-company-info-update' pk=info.id %}" class="edit-button-data">
+                <i class="fas fa-edit"></i> Edit Info
+            </a>
+            <a href="#" class="edit-button-data">
+                <i class="fas fa-cog"></i> Edit Basics
+            </a>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock content %}

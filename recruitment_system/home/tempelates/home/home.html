@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block job-listing %}
+{% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+    {% endif %}
+
+<style>
+    .job-card__header .company-info a:hover{
+         color: rgb(0, 179, 255);
+         text-decoration: dashed;
+     }
+ </style>
+<div class="jobs-container">
+    <div class="jobs-header">
+        <h1>Available Positions</h1>
+        <div class="jobs-filter">
+            <button class="filter-btn" data-filter="all">All Jobs</button>
+            <button class="filter-btn" data-filter="full-time">Full Time</button>
+            <button class="filter-btn" data-filter="remote">Remote</button>
+        </div>
+    </div>
+
+    <div class="jobs-list">
+        {% for job in jobs %}
+        <article class="job-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter }}">
+            <div class="job-card__header">
+                <div class="company-info">
+                    {% if job.company.logo %}
+                    <img class="company-logo" src="{{ job.company.logo.url }}" alt="{{ job.company.name }} logo">
+                    {% else %}
+                    <div class="company-logo-placeholder">{{ job.company.name|make_list|first }}</div>
+                    {% endif %}
+                    <div class="company-details">
+                        <h3 class="company-name">{{ job.company.name }}</h3>
+                        <span class="company-location">
+                            <i class="fas fa-map-marker-alt"></i> 
+                            {{ job.location|default:"Remote" }}
+                        </span>
+                    </div>
+                </div>
+                <div class="job-tags">
+                    {% if job.is_remote %}
+                    <span class="tag tag-remote">Remote</span>
+                    {% endif %}
+                    <span class="tag tag-type">{{ job.employment_type }}</span>
+                    {% if job.is_featured %}
+                    <span class="tag tag-featured">Featured</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="job-card__body">
+                <h2 class="job-title"><a href="#"style="color:black;text-decoration:none">{{ job.title }}</a></h2>
+                <p class="job-description">{{ job.description|truncatechars:50 }}</p>
+                
+                <div class="job-highlights">
+                    <div class="highlight">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>{{ job.salary }}</span>
+                    </div>
+                    <div class="highlight">
+                        <i class="fas fa-clock"></i>
+                        <span>{{ job.posted_date|timesince }} ago</span>
+                    </div>
+                </div>
+
+                <div class="job-skills">
+                    {% for skill in job.required_skills.all|slice:":5" %}
+                    <span class="skill-tag">{{ skill.name }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="job-card__footer" style="display:none">
+                <a href="#" class="btn btn-primary">
+                    <i class="fas fa-eye"></i> Applay
+                </a>
+                <button class="btn btn-outline save-job" data-job-id="{{ job.id }}">
+                    <i class="far fa-bookmark"></i> Save
+                </button>
+            </div>
+        </article>
+        {% empty %}
+        <div class="no-jobs-found">
+            <img src="{% static 'images/no-jobs.svg' %}" alt="No jobs found">
+            <h3>No jobs found</h3>
+            <p>Try adjusting your search criteria</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if jobs.has_other_pages %}
+    <div class="pagination-container">
+        <div class="pagination">
+            {% if jobs.has_previous %}
+            <a href="?page={{ jobs.previous_page_number }}" class="pagination-btn">
+                <i class="fas fa-chevron-left"></i> Previous
+            </a>
+            {% endif %}
+
+            <span class="pagination-current">
+                Page {{ jobs.number }} of {{ jobs.paginator.num_pages }}
+            </span>
+
+            {% if jobs.has_next %}
+            <a href="?page={{ jobs.next_page_number }}" class="pagination-btn">
+                Next <i class="fas fa-chevron-right"></i>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock job-listing %}

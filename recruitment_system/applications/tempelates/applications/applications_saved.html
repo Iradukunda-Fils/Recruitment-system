@@ -1,0 +1,133 @@
+{% extends 'base_application.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="content-section">
+    <div class="search-section">
+        <form method="get" action="" class="search-form">
+            <div class="search-input-group">
+                <input type="text" name="q" class="search-input" placeholder="Search jobs by title, location, or keywords..." value="{{ request.GET.q }}">
+            </div>
+            <button type="button" class="btn btn-secondary" id="toggleFilters">
+                <i class="fas fa-filter"></i> Filters
+            </button>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i> Search
+            </button>
+            
+            <div class="filters-row" id="filtersRow">
+                <select name="employment_type" class="filter-select">
+                    <option value="">Employment Type</option>
+                    <option value="full_time">Full Time</option>
+                    <option value="part_time">Part Time</option>
+                    <option value="contract">Contract</option>
+                </select>
+                
+                <select name="job_level" class="filter-select">
+                    <option value="">Job Level</option>
+                    <option value="entry">Entry Level</option>
+                    <option value="mid">Mid Level</option>
+                    <option value="senior">Senior Level</option>
+                </select>
+                
+                <select name="location" class="filter-select">
+                    <option value="">Location</option>
+                    {% for location in locations %}
+                    <option value="{{ location }}">{{ location }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+
+<section class="job-list" id="jobs">
+    {% for application in applications %}
+    <div class="job-card">
+        <div class="job-header">
+            <img class="job-profile" src="{{ application.job.company.logo.url }}" alt="Company Logo">
+            <div class="job-detail">
+                <h4>{{ application.job.company.name }}</h4> 
+                <h3>{{ application.job.title }}</h3>
+                <p>{{ application.job.description|truncatechars:120 }}</p>
+            </div>
+        </div>
+        <div class="job-footer">
+            <div class="job-labels">
+                {% for tag in application.job.tags.all %}
+                <span class="label">{{ tag.name }}</span>
+                {% endfor %}
+            </div>
+            <div class="job-cost">
+                <strong>Cost:</strong> <span class="cost">${{ application.job.salary }}</span>
+            </div>
+            <div class="job-actions">
+                <div class="deadline-info {% if job.is_expired %}expired{% else %}active{% endif %}">
+                    <i class="fas {% if job.is_expired %}fa-calendar-times{% else %}fa-calendar-check{% endif %}"></i>
+                    {% if application.job.is_expired %}
+                    Deadline Passed: {{ application.job.application_deadline|date:"F d, Y" }}
+                    {% else %}
+                    Apply by: {{ application.job.application_deadline|date:"F d, Y" }}
+                    {% endif %}
+                </div>
+                <a href="{% url 'saved-application-update' pk=application.id %}" class="btn btn-primary">
+                    <i class="fas fa-eye"></i> View
+                </a>
+                <a href="{% url 'saved-application-delete' pk=application.id %}" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Delete
+                </a>
+            </div>
+        </div>
+        <div class="job-posted">
+            Posted {{ application.job.posted_date|timesince }} ago
+        </div>
+    </div>
+
+    {% empty %}
+            <center>
+                <div class="no-jobs-message" style="margin-left: 10%;">
+                    <i class="fas fa-search"></i>
+                    <p>No jobs found matching your criteria.</p>
+                </div>
+            </center>
+    {% endfor %}
+    
+</section>
+
+{% if jobs.has_other_pages %}
+<div class="pagination-section">
+    <nav aria-label="Job Listing Pagination">
+        <ul class="pagination">
+            {% if jobs.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ jobs.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.employment_type %}&employment_type={{ request.GET.employment_type }}{% endif %}{% if request.GET.job_level %}&job_level={{ request.GET.job_level }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}">
+                    <i class="fas fa-angle-left"></i>
+                </a>
+            </li>
+            {% endif %}
+            {% for i in jobs.paginator.page_range %}
+            {% if jobs.number == i %}
+            <li class="page-item active">
+                <a class="page-link" href="#">{{ i }}</a>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ i }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.employment_type %}&employment_type={{ request.GET.employment_type }}{% endif %}{% if request.GET.job_level %}&job_level={{ request.GET.job_level }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}">
+                    {{ i }}
+                </a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if jobs.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ jobs.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.employment_type %}&employment_type={{ request.GET.employment_type }}{% endif %}{% if request.GET.job_level %}&job_level={{ request.GET.job_level }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}">
+                    <i class="fas fa-angle-right"></i>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}
+{% endblock content %}

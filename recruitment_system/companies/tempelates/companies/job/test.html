@@ -1,0 +1,223 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    
+    <title>Job Portal Website</title>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">CareerConnect</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#jobs">Jobs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#companies">Companies</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#testimoni">Testimonial</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#blog">Blogs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Sign In</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header with Background Image -->
+    <header class="header" style="background-image: url('https://images.pexels.com/photos/5710528/pexels-photo-5710528.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260'); height: 80vh; background-position: center; background-repeat: no-repeat; background-size: cover; position: relative;">
+        <div class="container h-100 d-flex flex-column justify-content-center align-items-center text-white">
+            <h1 class="display-4 fw-bold">FIND YOUR <span>PERFECT JOB</span> EASILY</h1>
+        </div>
+    </header>
+
+    <!-- Search and Filter -->
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-12 col-md-8 mx-auto">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="job title or keywords" aria-label="job title or keywords" aria-describedby="button-addon2">
+                    <button class="btn btn-primary" type="button" id="button-addon2">Search</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    <select class="form-select" id="job-level" name="job-level">
+                        <option selected>Job Level</option>
+                        <option value="entry">Entry</option>
+                        <option value="mid-senior">Mid-Senior</option>
+                        <option value="director">Director</option>
+                    </select>
+                    <select class="form-select" id="job-function" name="job-function">
+                        <option selected>Job Function</option>
+                        <option value="it">IT</option>
+                        <option value="management">Management</option>
+                        <option value="education">Education</option>
+                    </select>
+                    <select class="form-select" id="employment" name="employment">
+                        <option selected>Employment Type</option>
+                        <option value="internship">Internship</option>
+                        <option value="part-time">Part Time</option>
+                        <option value="full-time">Full Time</option>
+                    </select>
+                    <select class="form-select" id="location" name="location">
+                        <option selected>Locations</option>
+                        <option value="remote">Remote</option>
+                        <option value="us">US</option>
+                        <option value="uk">UK</option>
+                    </select>
+                    <select class="form-select" id="education" name="education">
+                        <option selected>Education</option>
+                        <option value="high-school">High School</option>
+                        <option value="bachelor">Bachelor's degree</option>
+                        <option value="master">Master's degree</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Listing -->
+    {% block job-listing %}
+    <section class="job-list" id="jobs">
+        <!-- Job listing content goes here -->
+    </section>
+    {% endblock job-listing %}
+
+    <!-- Join Section -->
+    {% block join %}
+    <section class="join bg-dark text-white py-5">
+        <div class="container text-center">
+            <h1 class="section-title">LET'S START YOUR NEW JOB WITH US</h1>
+            <p class="mb-4">Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae similique, modi quia voluptas accusantium corrupti enim velit.</p>
+            <button class="btn btn-primary">Join Now</button>
+        </div>
+    </section>
+    {% endblock join %}
+
+    <!-- Featured Companies -->
+    {% block featured-companies %}
+    <section class="featured py-5" id="companies">
+        <div class="container">
+            <h1 class="section-title">Featured Companies</h1>
+            <p class="mb-4">Lorem, ipsum dolor sit amet consectetur adipisicing elit. aliquam dolores nisi sint quae tempora! Excepturi laborum magni totam.</p>
+            <div class="row row-cols-1 row-cols-md-4 g-4">
+                <!-- Featured companies content goes here -->
+            </div>
+        </div>
+    </section>
+    {% endblock featured-companies %}
+
+    <!-- Testimonial Section -->
+    {% block testimonial-section %}
+    <section class="testimoni py-5" id="testimoni">
+        <div class="container">
+            <h1 class="section-title">Testimonial</h1>
+            <p class="mb-4">Let's see what our clients say about us</p>
+            <div class="swiper mySwiper">
+                <div class="swiper-wrapper">
+                    <!-- Swiper Slides -->
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+    </section>
+    {% endblock testimonial-section %}
+
+    <!-- Blogs -->
+    {% block blogs %}
+    <section class="blog py-5" id="blog">
+        <div class="container">
+            <h1 class="section-title">Career Advices</h1>
+            <p class="mb-4">Learn more career tips from company's recruiters</p>
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <!-- Blog content goes here -->
+            </div>
+        </div>
+    </section>
+    {% endblock blogs %}
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-md-4 mb-4 mb-md-0">
+                    <h3>CareerConnect</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero reiciendis, quos dolor doloribus asperiores ipsam quia temporibus.</p>
+                    <div class="social-media">
+                        <a href="#" class="text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-12 col-md-2 mb-4 mb-md-0">
+                    <h4>Explore</h4>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Top Companies</a></li>
+                        <li><a href="#" class="text-white">Terms of services</a></li>
+                        <li><a href="#" class="text-white">Podcast</a></li>
+                        <li><a href="#" class="text-white">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="col-12 col-md-2 mb-4 mb-md-0">
+                    <h4>About</h4>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">FAQ</a></li>
+                        <li><a href="#" class="text-white">Get Inspired</a></li>
+                        <li><a href="#" class="text-white">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="col-12 col-md-2 mb-4 mb-md-0">
+                    <h4>Support</h4>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Custom Service</a></li>
+                        <li><a href="#" class="text-white">Trust & Safety</a></li>
+                        <li><a href="#" class="text-white">Partnership</a></li>
+                    </ul>
+                </div>
+                <div class="col-12 col-md-2 mb-4 mb-md-0">
+                    <h4>Community</h4>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Top Community</a></li>
+                        <li><a href="#" class="text-white">Invite a Friend</a></li>
+                        <li><a href="#" class="text-white">Event</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+    <script src="{% static 'javascript/main.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+{% extends 'base_company.html' %}
+{% block content %}
+
+    <div class="main-content" id="manage-users">
+        <div class="content-section">
+            <h2>Manage Users</h2>
+            <p>Current Users:</p>
+            <div class="grid-container">
+                <div class="card">
+                    <h3>User 123</h3>
+                    <p>Status: Active</p>
+                    <button>View Profile</button>
+                    <button>Delete User</button>
+                </div>
+                <div class="card">
+                    <h3>Admin 456</h3>
+                    <p>Status: Active</p>
+                    <button>View Profile</button>
+                    <button>Delete User</button>
+                </div>
+                <div class="card">
+                    <h3>User 789</h3>
+                    <p>Status: Inactive</p>
+                    <button>View Profile</button>
+                    <button>Delete User</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

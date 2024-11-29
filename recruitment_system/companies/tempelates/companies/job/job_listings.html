@@ -1,0 +1,462 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Company Dashboard{% endblock %}</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.oaistatic.com/bootstrap/5.2.3/css/bootstrap.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://cdn.oaistatic.com/fonts/inter/inter.css">
+    
+    <style>
+        :root {
+            --primary-color: #0f766e;
+            --secondary-color: #0d9488;
+            --sidebar-width: 280px;
+            --header-height: 60px;
+            --sidebar-bg: #134e4a;
+            --content-bg: #f8fafc;
+            --card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--content-bg);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        .mobile-header {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 0 1rem;
+        }
+
+        .mobile-header-content {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            justify-content: space-between;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            color: #fff;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .company-profile {
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        .company-logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 1rem;
+            object-fit: contain;
+            background: white;
+            border-radius: 12px;
+            padding: 0.5rem;
+        }
+
+        .company-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .company-type {
+            font-size: 0.875rem;
+            opacity: 0.7;
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 1rem 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu li a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-left-color: var(--secondary-color);
+        }
+
+        .sidebar-menu li.active a {
+            background-color: var(--secondary-color);
+            color: #fff;
+            font-weight: 500;
+            border-left-color: #fff;
+        }
+
+        .sidebar-menu li a i {
+            width: 24px;
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+            min-height: 100vh;
+            transition: margin-left 0.3s ease;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .header-title {
+            margin: 0;
+        }
+
+        .header-title h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #111827;
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Card Styles */
+        .dashboard-card {
+            background: #fff;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            height: 100%;
+            transition: all 0.2s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-hover-shadow);
+        }
+
+        .stats-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stats-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .stats-info h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+            color: #111827;
+        }
+
+        .stats-info p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        /* Table Styles */
+        .custom-table {
+            width: 100%;
+            background: white;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .custom-table th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            color: #4b5563;
+            padding: 1rem;
+        }
+
+        .custom-table td {
+            padding: 1rem;
+            border-top: 1px solid #e5e7eb;
+            color: #111827;
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        /* Form Styles */
+        .form-control {
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+            padding: 0.625rem 0.875rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.1);
+        }
+
+        .form-select {
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+            padding: 0.625rem 2.5rem 0.625rem 0.875rem;
+        }
+
+        /* Loading Spinner */
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            display: none;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .mobile-header {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding-top: calc(var(--header-height) + 1rem);
+            }
+
+            .content-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: flex-start;
+                overflow-x: auto;
+            }
+        }
+
+        /* Quick Actions Menu */
+        .quick-actions {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 900;
+        }
+
+        .quick-actions .btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading Spinner -->
+    <div class="spinner-overlay" id="spinner">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <div class="mobile-header-content">
+            <button class="menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="mobile-logo">
+                {% if user.company.logo %}
+                    <img src="{{ user.company.logo.url }}" alt="{{ user.company.name }}" height="40">
+                {% endif %}
+            </div>
+            <div class="mobile-actions">
+                <a href="{% url 'settings' %}" class="btn btn-link">
+                    <i class="fas fa-cog"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="company-profile">
+                {% if user.company.logo %}
+                    <img src="{{ user.company.logo.url }}" alt="{{ user.company.name }}" class="company-logo">
+                {% else %}
+                    <img src="{% static 'images/default-company-logo.png' %}" alt="Default Logo" class="company-logo">
+                {% endif %}
+                <h2 class="company-name">{{ user.company.name }}</h2>
+                <p class="company-type">{{ user.company.industry }}</p>
+            </div>
+        </div>
+
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="{% if request.resolver_match.url_name == 'company-home' %}active{% endif %}">
+                    <a href="{% url 'company-home' %}">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="{% if request.resolver_match.url_name == 'manage-users' %}active{% endif %}">
+                    <a href="{% url 'manage-users' %}">
+                        <i class="fas fa-users"></i>
+                        <span>Users</span>
+                    </a>
+                </li>
+                <li class="{% if request.resolver_match.url_name == 'job-list' %}active{% endif %}">
+                    <a href="{% url 'job-list' %}">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Jobs</span>
+                    </a>
+                </li>
+                <li class="{% if request.resolver_match.url_name == 'analytic' %}active{% endif %}">
+                    <a href="{% url 'analytic' %}">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+                <li class="{% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
+                    <a href="{% url 'settings' %}">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'company-logout' %}">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <button class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="left" title="Post New Job">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.oaistatic.com/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.oaistatic.com/popper.js/2.11.6/umd/popper.min.js"></script>
+    <script src="https://cdn.oaistatic.com/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
+
+    <script>

@@ -1,0 +1,29 @@
+{% extends 'base_application.html' %}
+
+{% block content %}
+<div class="main-content" id="home" style="display: block;">
+    <h1>User Overview</h1>
+    <div class="dashboard-cards">
+        <div class="card">
+            <h3>Recent Applications</h3>
+            <p>5 applications submitted</p>
+        </div>
+        <div class="card">
+            <h3>Saved Jobs</h3>
+            <p>3 jobs saved</p>
+        </div>
+        <div class="card">
+            <h3>Profile Completeness</h3>
+            <p>75% complete</p>
+        </div>
+    </div>
+    <div class="recent-activity">
+        <h2>Recent Activity</h2>
+        <ul>
+            <li>Applied to "Software Engineer" on Oct 20</li>
+            <li>Saved "Web Developer" job on Oct 19</li>
+            <li>Updated profile settings on Oct 18</li>
+        </ul>
+    </div>
+</div>
+{% endblock content %}

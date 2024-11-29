@@ -1,0 +1,72 @@
+{% extends 'base_company.html' %}
+
+{% block content %}
+<style>
+    .container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
+    p {
+        text-align: center;
+        font-size: 18px;
+        color: #555;
+    }
+    p span {
+        color: brown;
+    }
+    .btn-container {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
+    }
+    .btn {
+        width: 45%;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 16px;
+        text-align: center;
+    }
+    .btn-danger {
+        background-color: brown;
+        color: white;
+        border: none;
+    }
+    .btn-danger:hover {
+        background-color: darkred;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+<div class="container">
+    <h2>Category Delete</h2>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <div class="card">
+            <p>Are you sure you want to remove Category <span>{{ branch.name }}</span>?</p>
+            <div class="btn-container">
+                <button class="btn btn-danger" type="submit">Yes, Remove</button>
+                <a class="btn btn-primary" href="{% url 'settings-branches' %}">No</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}

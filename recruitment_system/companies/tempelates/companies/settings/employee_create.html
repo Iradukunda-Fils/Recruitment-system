@@ -1,0 +1,107 @@
+{% extends 'base_company.html' %}
+{% load crispy_forms_tags %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js" defer></script>
+
+
+{% block content %}
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 30px auto;
+        background-color: #ffffff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    h3 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 24px;
+    }
+    .form-group {
+        margin-top: 15px;
+        transition: border-color 0.3s ease;
+    }
+    .form-group:hover {
+        border-color: #007bff;
+    }
+    .btn-primary {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 20px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+    .invalid-feedback {
+        color: red;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+    /* Phone input field styling */
+    .intl-tel-input {
+        width: 100%;
+    }
+</style>
+
+<div class="form-container">
+    <h3>Add Employee</h3>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                {{ field|as_crispy_field }}
+                {% if field.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in field.errors %}
+                            {{ error }}<br>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn-primary">Add</button>
+    </form>
+</div>
+
+
+{% endblock content %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const phoneInput = document.querySelector("#id_phone");
+        if (phoneInput) {
+            const iti = intlTelInput(phoneInput, {
+                initialCountry: "auto",
+                geoIpLookup: function(callback) {
+                    fetch('https://ipinfo.io?token=62ba70c9b5b541')
+                        .then(response => response.json())
+                        .then(data => callback(data.country))
+                        .catch(() => callback("us"));  // Default to US if location lookup fails
+                },
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+            });
+            
+            phoneInput.form.addEventListener("submit", function(event) {
+                if (!iti.isValidNumber()) {
+                    event.preventDefault();  // Prevent form submission if phone number is invalid
+                    alert("Please enter a valid phone number.");
+                } else {
+                    phoneInput.value = iti.getNumber();  // Format as full international number
+                }
+            });
+        }
+    });
+</script>
+

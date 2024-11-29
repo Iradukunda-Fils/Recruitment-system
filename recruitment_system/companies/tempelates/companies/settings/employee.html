@@ -1,0 +1,125 @@
+{% extends 'base_company.html' %}
+{% block content %}
+<div class="content-section">
+    <div class="search-section">
+        <form method="get" action="{% url 'job-list' %}" class="search-form">
+            <div class="search-input-group">
+                <input type="text" name="q" class="search-input" placeholder="Search jobs by title, location, or keywords..." value="{{ request.GET.q }}">
+            </div>
+            <button type="button" class="btn btn-secondary" id="toggleFilters">
+                <i class="fas fa-filter"></i> Filters
+            </button>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i> Search
+            </button>
+            
+            <div class="filters-row" id="filtersRow">
+                <select name="employment_type" class="filter-select">
+                    <option value="">Employment Type</option>
+                    <option value="full_time">Full Time</option>
+                    <option value="part_time">Part Time</option>
+                    <option value="contract">Contract</option>
+                </select>
+                
+                <select name="job_level" class="filter-select">
+                    <option value="">Job Level</option>
+                    <option value="entry">Entry Level</option>
+                    <option value="mid">Mid Level</option>
+                    <option value="senior">Senior Level</option>
+                </select>
+                
+                <select name="location" class="filter-select">
+                    <option value="">Location</option>
+                    {% for location in locations %}
+                    <option value="{{ location }}">{{ location }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<style>
+    .table th, .table td {
+        padding: 5px; /* Reduced padding to decrease row height */
+    }
+    .employee-avatar, .default-avatar {
+        width: 30px; /* Reduced size to fit the compact layout */
+        height: 30px;
+    }
+    
+</style>
+        <div class="page-header">
+            <h3>Employee</h3>
+            <a href="{% url 'settings-employee-create' %}" class="add-table-btn">
+                <i class="fas fa-plus"></i> Add
+            </a>
+        </div>
+        
+
+        {% if not employee %}
+        <div class="alert alert-info text-center">
+            No employees found. Start by adding your first employee!
+        </div>
+        {% else %}
+        <div class="table-responsive employee-table">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Profile Picture</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>Position</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for emp in employee %}
+                    <tr>
+                        <td>
+                            {% if emp.employee_picture %}
+                            <a href="{{ emp.employee_picture.url }}" target="_blank">
+                                <img src="{{ emp.employee_picture.url }}" 
+                                     alt="{{ emp.first_name }} {{ emp.last_name }}" 
+                                     class="employee-avatar">
+                            </a>
+                            {% else %}
+                            <div class="employee-avatar default-avatar">
+                                {{ emp.first_name|slice:":1" }}{{ emp.last_name|slice:":1" }}
+                            </div>
+                            {% endif %}
+                        </td>
+                        <td>{{ emp.first_name }}</td>
+                        <td>{{ emp.last_name }}</td>
+                        <td>{{ emp.email }}</td>
+                        <td>{{ emp.phone }}</td>
+                        <td>{{ emp.position }}</td>
+                        <td>
+                            <div class="action-links">
+                                <a href="{% url 'settings-employee-update' pk=emp.id %}" 
+                                   class="btn-action btn-edit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                        <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10z"/>
+                                    </svg>
+                                    Edit
+                                </a>
+                                <a href="{% url 'settings-employee-delete' pk=emp.id %}" 
+                                   class="btn-action btn-remove">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                    </svg>
+                                    Remove
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+{% endblock content %}

@@ -1,0 +1,204 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Portal Website</title>
+
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="https://cdn.oaistatic.com/css/main.css">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <!-- Swiper -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="{% static 'css/home/main.css' %}">
+
+    <!-- Your Custom JS -->
+    <script defer src="https://cdn.oaistatic.com/javascript/main.js" defer></script>
+    <script defer src="{% static 'javascript/home/main.js' %}" defer></script>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <h2 class="navbar-logo"><a href="#">CareerConnect</a></h2>
+        <div class="navbar-menu">
+            <a href="#jobs">Jobs</a>
+            <a href="#companies">Companies</a>
+            <a href="#testimonial">Testimonial</a>
+            <a href="#blogs">Blogs</a>
+            <a href="#">Sign In</a>
+        </div>
+        <div class="menu-toggle">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </nav>
+
+    <!-- Header with Background Image -->
+    <header class="header">
+        <div class="header-content"style="width: 100%; height: 80vh; background-image: url('https://images.pexels.com/photos/5710528/pexels-photo-5710528.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260'); background-position: center; background-repeat: no-repeat; background-size: cover; position: relative;">
+            <h1 class="header-title">FIND YOUR <br> <span>PERFECT JOB</span> <br> EASILY</h1>
+            <p class="header-description">Discover your dream job with our comprehensive job portal</p>
+        </div>
+    </header>
+
+    <!-- Search and Filter -->
+    <section class="search-filter">
+        <div class="search-box">
+            <div class="search-card">
+                <input class="search-input" type="text" placeholder="job title or keywords">
+                <button class="search-button">Search</button>
+            </div>
+        </div>
+        <div class="filter-box">
+            <div class="filter-dropdown">
+                <select class="filter-select" id="job-level" name="job-level">
+                    <option>Job Level</option>
+                    <option>Entry</option>
+                    <option>Mid-Senior</option>
+                    <option>Director</option>
+                </select>
+                <select class="filter-select" id="job-function" name="job-function">
+                    <option>Job Function</option>
+                    <option>IT</option>
+                    <option>Management</option>
+                    <option>Education</option>
+                </select>
+                <select class="filter-select" id="employment" name="employment">
+                    <option>Employment Type</option>
+                    <option>Internship</option>
+                    <option>Part Time</option>
+                    <option>Full Time</option>
+                </select>
+                <select class="filter-select" id="Education" name="Education">
+                    <option>Education</option>
+                    <option>High School</option>
+                    <option>Bachelor's degree</option>
+                    <option>Master's degree</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- Job Listing -->
+    <section class="job-list" id="jobs">
+        <h2 class="section-title">Latest Job Openings</h2>
+        <div class="job-cards">
+            <div class="job-card">
+                <div class="job-name">
+                    <img class="job-profile" src="https://cdn.oaistatic.com/images/tesla.webp" alt="Tesla" style="width: 100%; height: 80vh; background-image: url('https://images.pexels.com/photos/5710528/pexels-photo-5710528.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260'); background-position: center; background-repeat: no-repeat; background-size: cover; position: relative;">
+                    <div class="job-detail">
+                        <h4>Tesla</h4>
+                        <h3>Mechanical Engineer</h3>
+                        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit.</p>
+                    </div>
+                </div>
+                <div class="job-label">
+                    <a class="label-a" href="#">HTML</a>
+                    <a class="label-b" href="#">CSS</a>
+                    <a class="label-c" href="#">Javascript</a>
+                </div>
+                <div class="job-posted">
+                    Posted 2 minutes ago
+                </div>
+            </div>
+            <!-- Add more job cards here -->
+        </div>
+        <button class="job-more">More Jobs</button>
+    </section>
+
+    <!-- Join Section -->
+    <section class="join">
+        <div class="join-detail">
+            <h2 class="section-title">LETS START YOUR NEW JOB WITH US</h2>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae similique, modi quia voluptas accusantium corrupti enim velit.</p>
+        </div>
+        <button class="join-button">Join Now</button>
+    </section>
+
+    <!-- Featured Companies -->
+    <section class="featured" id="companies">
+        <h2 class="section-title">Featured Companies</h2>
+        <p class="section-description">Explore top companies hiring on our platform</p>
+        <div class="featured-wrapper">
+            <div class="featured-card">
+                <img class="featured-image" src="https://cdn.oaistatic.com/images/ebay.jpg" alt="Ebay">
+                <h4>Ebay</h4>
+                <button class="featured-button">View 2 jobs</button>
+            </div>
+            <!-- Add more featured company cards here -->
+        </div>
+    </section>
+
+    <!-- Testimonial Section -->
+    <section class="testimonial" id="testimonial">
+        <h2 class="section-title">What Our Clients Say</h2>
+        <p class="section-description">Learn about our customers' experiences</p>
+        <div class="swiper mySwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <i class="fas fa-quote-left"></i>
+                    <p class="testimonial-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque cupiditate incidunt, vel obcaecati libero nesciunt ad quasi esse nulla laboriosam aspernatur.</p>
+                    <div class="testimonial-info">
+                        <img src="https://cdn.oaistatic.com/images/profile.png" alt="Jayson Smith">
+                        <div>
+                            <h4>Jayson Smith</h4>
+                            <span>Business Development</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add more testimonial slides here -->
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </section>
+
+    <!-- Blogs Section -->
+    <section class="blogs" id="blogs">
+        <h2 class="section-title">Career Advice</h2>
+        <p class="section-description">Learn more career tips from our experts</p>
+        <div class="blog-wrapper">
+            <div class="blog-card">
+                <img class="blog-image" src="{% static 'images/profile3.jpg' %}" alt="Blog Image">
+                <div class="blog-detail">
+                    <span>11 Apr 2022</span>
+                    <h4>How to enjoy work</h4>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                    <a href="#" class="blog-more">Read More</a>
+                </div>
+            </div>
+            <!-- Add more blog cards here -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-wrapper">
+            <h3>CareerConnect</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero reiciendis, quos dolor doloribus asperiores ipsam quia temporibus.</p>
+            <div class="social-media">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+        <!-- Add more footer sections here -->
+    </footer>
+
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+
+    <!-- jQuery (if needed) -->
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" defer></script>
+    <script src="{% static 'javascript/home/main.js' %}" defer></script>
+</body>
+</html>

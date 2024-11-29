@@ -1,0 +1,296 @@
+{% extends 'base_company.html' %}
+
+{% block content %}
+{% load static %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+    .job-detail-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+        
+        
+    }
+
+    .job-header {
+        background: linear-gradient(to right, #f8f9fa, #ffffff);
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .job-title {
+        font-size: 2.25rem;
+        color: #2d3748;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .job-title i {
+        color: #4a90e2;
+        font-size: 2rem;
+    }
+
+    .job-detail-card {
+        background: #ffffff;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+    }
+
+    .info-section {
+        border-bottom: 1px solid #e2e8f0;
+        padding: 1.5rem 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+
+    .info-section:last-child {
+        border-bottom: none;
+    }
+
+    .job-info-label {
+        display: block;
+        font-size: 0.875rem;
+        color: #64748b;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .job-info-value {
+        color: #334155;
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    .description-section {
+        background: #f8fafc;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        margin: 1rem 0;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .badge-deadline {
+        background-color: #fff;
+        border: 2px solid;
+    }
+
+    .badge-deadline.active {
+        border-color: #22c55e;
+        color: #22c55e;
+    }
+
+    .badge-deadline.expired {
+        border-color: #ef4444;
+        color: #ef4444;
+    }
+
+    .badge-status {
+        background-color: #fff;
+        border: 2px solid;
+    }
+
+    .badge-status.active {
+        border-color: #3b82f6;
+        color: #3b82f6;
+    }
+
+    .badge-status.inactive {
+        border-color: #94a3b8;
+        color: #94a3b8;
+    }
+
+    .job-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background-color: #3b82f6;
+        color: white;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #2563eb;
+        transform: translateY(-1px);
+    }
+
+    .btn-delete {
+        background-color: #fee2e2;
+        color: #ef4444;
+        border: none;
+    }
+
+    .btn-delete:hover {
+        background-color: #fecaca;
+        transform: translateY(-1px);
+    }
+
+    .posted-time {
+        color: #64748b;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .job-title {
+            font-size: 1.75rem;
+        }
+        
+        .job-detail-card {
+            padding: 1.5rem;
+        }
+        
+        .info-section {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .job-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="job-detail-container" style="font-family: 'Roboto', sans-serif;">
+    <div class="job-header">
+        <h2 class="job-title">
+            <i class="fas fa-briefcase"></i>
+            {{ job.title }}
+        </h2>
+
+        <div class="posted-time">
+            <i class="fas fa-clock"></i>
+            Posted {{ job.posted_date|timesince }} ago
+        </div>
+    </div>
+
+    <div class="job-detail-card">
+        <div class="info-section">
+            <div>
+                <span class="job-info-label">Post Date</span>
+                <span class="job-info-value">{{ job.posted_date|date:"F d, Y" }}</span>
+            </div>
+            
+            <div>
+                <span class="job-info-label">Salary</span>
+                <span class="job-info-value">${{ job.salary|floatformat:2 }}</span>
+            </div>
+            
+            <div>
+                <span class="job-info-label">Employment Type</span>
+                <span class="job-info-value">{{ job.employment_type }}</span>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <div>
+                <span class="job-info-label">Location</span>
+                <span class="job-info-value">
+                    <i class="fas fa-map-marker-alt text-gray-500 mr-1"></i>
+                    {{ job.location }}
+                </span>
+            </div>
+            <div>
+                <span class="job-info-label">Education Required</span>
+                <span class="job-info-value">
+                    <i class="fas fa-graduation-cap text-gray-500 mr-1"></i>
+                    {{ job.education }}
+                </span>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <div class="description-section">
+                <span class="job-info-label">Job Description</span>
+                <div class="job-info-value">{{ job.description|linebreaks }}</div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <div class="description-section">
+                <span class="job-info-label">Requirements</span>
+                <div class="job-info-value">{{ job.requirements|linebreaks }}</div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <div>
+                <span class="job-info-label">Job Level</span>
+                <span class="job-info-value">{{ job.job_level }}</span>
+            </div>
+            <div>
+                <span class="job-info-label">Job Function</span>
+                <span class="job-info-value">{{ job.job_function }}</span>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <div>
+                <span class="job-info-label">Application Deadline</span>
+                <span class="badge badge-deadline {% if job.is_expired %}expired{% else %}active{% endif %}">
+                    <i class="fas {% if job.is_expired %}fa-times-circle{% else %}fa-calendar-check{% endif %} mr-1"></i>
+                    {{ job.application_deadline|date:"F d, Y, h:i A" }}
+                </span>
+            </div>
+            <div>
+                <span class="job-info-label">Status</span>
+                <span class="badge badge-status {% if job.is_active %}active{% else %}inactive{% endif %}">
+                    <i class="fas {% if job.is_active %}fa-check-circle{% else %}fa-times-circle{% endif %} mr-1"></i>
+                    {{ job.is_active|yesno:"Active,Not Active" }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="job-actions">
+        <a href="{% url 'job-update' pk=job.id %}" class="btn btn-primary">
+            <i class="fas fa-edit"></i>
+            Edit Job
+        </a>
+        <a href="{% url 'job-delete' pk=job.id %}" class="btn btn-delete" data-toggle="modal" data-target="#deleteJobModal">
+            <i class="fas fa-trash"></i>
+            Delete Job
+        </a>
+    </div>
+</div>
+
+{% endblock content %}

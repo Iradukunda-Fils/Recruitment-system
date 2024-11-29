@@ -1,0 +1,728 @@
+{% load static %}
+{% load humanize %}
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="container job-board" >
+    <!-- <script type="application/json" id="jobs-data">
+        {{ jobs_json|safe }}
+    </script> -->
+
+    <div class="job-search-section">
+        <form id="job-search-form" class="job-search-form" method="get">
+            <div class="search-wrapper">
+                <i class="fas fa-search search-icon"></i>
+                <input 
+                    type="search" 
+                    id="search-input"
+                    name="q"
+                    class="search-input" 
+                    placeholder="Find your dream job..."
+                    value="{{ request.GET.q }}"
+                    aria-label="Search jobs"
+                >
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-wrapper">
+                    <i class="fas fa-briefcase"></i>
+                    <select 
+                        id="job-level-filter" 
+                        name="job_level" 
+                        class="filter-select"
+                        aria-label="Filter by job level"
+                    >
+                        <option value="">Job Level</option>
+                        {% for level, label in job_levels %}
+                            <option 
+                                value="{{ level }}" 
+                                {% if request.GET.job_level == level %}selected{% endif %}
+                            >
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Location Filter -->
+                <div class="filter-wrapper">
+                    <label for="location-filter" class="sr-only">Filter by Location</label>
+                    <i class="fas fa-map-marker-alt"></i>
+                    <select 
+                        id="location-filter" 
+                        name="location" 
+                        class="filter-select"
+                        aria-label="Filter by location"
+                    >
+                        <option value="">Location</option>
+                        {% for location in distinct_locations %}
+                            <option 
+                                value="{{ location }}" 
+                                {% if request.GET.location == location %}selected{% endif %}
+                            >
+                                {{ location }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-wrapper">
+                    <i class="fas fa-clock"></i>
+                    <select 
+                        id="employment-type-filter" 
+                        name="employment_type" 
+                        class="filter-select"
+                        aria-label="Filter by employment type"
+                    >
+                        <option value="">Employment Type</option>
+                        {% for type, label in employment_types %}
+                            <option 
+                                value="{{ type }}" 
+                                {% if request.GET.employment_type == type %}selected{% endif %}
+                            >
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" class="search-button" aria-label="Search">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+        </form>
+    </div>
+    {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+    {% endif %}
+    <br><br>
+    
+
+    <div class="job-listings-grid" id="job-listings-container">
+        
+        {% for job in jobs %}
+        {% if not job.is_expired %}
+
+            <div class="job-card" data-job-id="{{ job.id }}">
+                <div class="application-feedback" id="feedback-{{ job.id }}" style="display: none; margin-top: 10px;">
+                    <span class="feedback-message"></span>
+                </div>
+                <div class="job-card-header">
+                    <div class="job-card-company-logo">
+                        <img src="{{ job.company.logo.url|default:'/static/images/default-logo.png' }}" alt="{{ job.company.name }} logo">
+                    </div>
+                    <div class="job-card-title-section">
+                        <h2 class="job-card-title" style="font-size: xx-large;">{{ job.title }}</h2>
+                        <p class="job-card-company">
+                            <i class="fas fa-building"></i> {{ job.company.name }} 
+                            <span class="job-location">
+                                <i class="fas fa-map-marker-alt"></i> {{ job.location }}
+                            </span>
+                        </p>
+                    </div>
+                    <span class="job-card-level-badge">{{ job.job_level }}</span>
+                </div>
+
+                <div class="job-card-details">
+                    <div class="job-card-detail-grid">
+                        <div class="job-card-detail">
+                            <i class="fas fa-clock"></i>
+                            <span class="job-card-detail-label"></span>
+                            <span class="job-card-detail-value"><b style="font-size: larger;">{{ job.employment_type }}</b></span>
+                        </div>
+                        <div class="job-card-detail">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span class="job-card-detail-label"></span>
+                            <span class="job-card-detail-value" style="font-size: x-large;"><b>${{ job.salary|floatformat:2 }}</b></span>
+                        </div>
+                        <div class="job-card-detail">
+                            <i class="fas fa-calendar-day"></i>
+                            <span class="job-card-detail-label"></span>
+                            <span class="job-card-detail-value">{{ job.posted_date |naturaltime }}</span>
+                        </div>
+                        <div class="job-card-detail">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span class="job-card-detail-label"></span>
+                            <span class="job-card-detail-value">{{ job.education }}</span>
+                        </div>
+                        <div class="job-card-detail">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span class="job-card-detail-label"></span>
+                            <span class="job-card-detail-value" style="color: #2ecc71;">{{ job.application_deadline|date:"F d, Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="job-card-description" style="text-size-adjust: center;">{{ job.description|truncatewords:15 }}</p>
+
+                <div class="job-card-actions">
+                    
+                        <a href="{% url 'home-job-detail' pk=job.id %}" class="btn-primary job-card-apply-button" style="text-decoration: none;">
+                            <i class="fas fa-paper-plane"></i> Apply Now
+                        </a>
+                        <form method="POST" >
+                            {% csrf_token %}
+                            <input type="hidden" name="job_id" value="{{ job.pk }}">
+                            <button type="submit" class="btn-secondary job-card-save-button" >
+                            <i class="far fa-book"></i> Save Job
+                    </button>
+                   </form>
+                </div>
+            </div>
+
+        {% endif %}
+        {% empty %}
+            <div class="no-jobs-message">
+                <i class="fas fa-search"></i>
+                <p>No jobs found matching your criteria.</p>
+            </div>
+        {% endfor %}
+    </div>
+
+
+   
+
+    <div id="pagination-container" class="pagination-container">
+        {% if jobs.has_other_pages %}
+            <div class="pagination">
+                {% if jobs.has_previous %}
+                    <a href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="pagination-button">
+                        <i class="fas fa-angle-double-left"></i> First
+                    </a>
+                    <a href="?page={{ jobs.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="pagination-button">
+                        <i class="fas fa-angle-left"></i> Previous
+                    </a>
+                {% endif %}
+
+                <span class="pagination-info">
+                    Page {{ jobs.number }} of {{ jobs.paginator.num_pages }}
+                </span>
+
+                {% if jobs.has_next %}
+                    <a href="?page={{ jobs.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="pagination-button">
+                        Next <i class="fas fa-angle-right"></i>
+                    </a>
+                    <a href="?page={{ jobs.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="pagination-button">
+                        Last <i class="fas fa-angle-double-right"></i>
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<br>
+
+<center>
+    <h1>for that which has Deadline passed</h1>
+</center>
+
+<br>
+
+<div class="container job-board">
+    
+    
+    <div class="job-listings-grid" id="job-listings-container">
+        {% for job in jobs %}
+        {% if job.is_expired %}
+            <div class="job-card" data-job-id="{{ job.id }}">
+                <div class="job-card-header">
+                    <div class="job-card-company-logo">
+                        <img src="{{ job.company.logo.url|default:'/static/images/default-logo.png' }}" alt="{{ job.company.name }} logo">
+                    </div>
+                    <div class="job-card-title-section">
+                        <h2 class="job-card-title">{{ job.title }}</h2>
+                        <p class="job-card-company">
+                            <i class="fas fa-building"></i> {{ job.company.name }} 
+                            <span class="job-location">
+                                <i class="fas fa-map-marker-alt"></i> {{ job.location }}
+                            </span>
+                        </p>
+                    </div>
+                    <span class="job-card-level-badge">{{ job.job_level }}</span>
+                </div>
+
+                <div class="job-card-details">
+                    <div class="job-card-detail-grid">
+                        <div class="job-card-detail">
+                            <i class="fas fa-clock"></i>
+                            <span class="job-card-detail-label"></span>
+                            <span class="job-card-detail-value"><b style="font-size: larger;">{{ job.employment_type }}</b></span>
+                        </div>
+                        <div class="job-card-detail">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span class="job-card-detail-label"></span>
+                            <span class="job-card-detail-value" style="font-size: x-large;"><b>${{ job.salary|floatformat:2 }}</b></span>
+                        </div>
+                        <div class="job-card-detail">
+                            <i class="fas fa-calendar-day"></i>
+                            <span class="job-card-detail-label"></span>
+                            <span class="job-card-detail-value">{{ job.posted_date |naturaltime }}</span>
+                        </div>
+                        <div class="job-card-detail">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span class="job-card-detail-label"></span>
+                            <span class="job-card-detail-value">{{ job.education }}</span>
+                        </div>
+                        <div class="job-card-detail">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span class="job-card-detail-label"></span>
+                            <span class="job-card-detail-value" style="color: #b92200;">{{ job.application_deadline|date:"F d, Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="job-card-description" style="text-size-adjust: center;">{{ job.description|truncatewords:15 }}</p>
+
+                <div class="job-card-actions">
+                    <a href="{% url 'home-job-detail' pk=job.id %}" class="btn-primary job-card-apply-button" data-job-id="{{ job.id }}" style="text-decoration: none;">
+                        <i class="fas fa-eye"></i> view
+                    </a>
+                    
+                    <p style="color: red;"><strong>Expired</strong></p>
+                </div>
+            </div>
+        {% endif %}
+        {% empty %}
+            <div class="no-jobs-message">
+                <i class="fas fa-search"></i>
+                <p>No jobs found matching your criteria.</p>
+            </div>
+        {% endfor %}
+    </div>
+
+
+
+    
+
+    <div id="pagination-container" class="pagination-container">
+        {% if jobs.has_other_pages %}
+            <div class="pagination">
+                {% if jobs.has_previous %}
+                    <a href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="pagination-button">
+                        <i class="fas fa-angle-double-left"></i> First
+                    </a>
+                    <a href="?page={{ jobs.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="pagination-button">
+                        <i class="fas fa-angle-left"></i> Previous
+                    </a>
+                {% endif %}
+
+                <span class="pagination-info">
+                    Page {{ jobs.number }} of {{ jobs.paginator.num_pages }}
+                </span>
+
+                {% if jobs.has_next %}
+                    <a href="?page={{ jobs.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="pagination-button">
+                        Next <i class="fas fa-angle-right"></i>
+                    </a>
+                    <a href="?page={{ jobs.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="pagination-button">
+                        Last <i class="fas fa-angle-double-right"></i>
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+
+
+<style>
+    :root {
+        --primary-color: #3498db;
+        --secondary-color: #2ecc71;
+        --text-dark: #333;
+        --text-light: #fff;
+        --background-light: #f4f6f7;
+        --border-color: #e0e0e0;
+    }
+    
+    .job-board {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: var(--background-light);
+        font-family: 'Roboto', sans-serif;
+    }
+    
+    .job-search-section {
+        background-color: var(--text-light);
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+    
+    .search-wrapper {
+        position: relative;
+        margin-bottom: 15px;
+    }
+    
+    .search-icon {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--primary-color);
+    }
+    
+    .search-input {
+        width: 100%;
+        padding: 12px 12px 12px 35px;
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        font-size: 16px;
+    }
+    
+    .filter-group {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    .filter-wrapper {
+        position: relative;
+        flex-grow: 1;
+    }
+    
+    .filter-wrapper i {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--primary-color);
+    }
+    
+    .filter-select {
+        width: 100%;
+        padding: 10px 10px 10px 35px;
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        appearance: none;
+    }
+    
+    .search-button {
+        background-color: var(--primary-color);
+        color: var(--text-light);
+        border: none;
+        padding: 12px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+    .search-button:hover {
+        background-color: rgb(1, 92, 158);
+    }
+    
+    .job-listings-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+    
+    .job-card {
+        background-color: var(--text-light);
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+    }
+    
+    .job-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .job-card-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .job-card-company-logo img {
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+        margin-right: 15px;
+        border-radius: 5px;
+    }
+    
+    .job-card-title {
+        margin: 0;
+        font-size: 1.2rem;
+        color: var(--text-dark);
+    }
+    
+    .job-card-company {
+        margin: 5px 0 0;
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .job-card-level-badge {
+        background-color: var(--secondary-color);
+        color: var(--text-light);
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-size: 0.8rem;
+    }
+    
+    .job-card-details {
+        margin: 15px 0;
+    }
+    
+    .job-card-detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    
+    .job-card-detail {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--text-dark);
+        font-size: 0.9rem;
+    }
+    
+    .job-card-detail i {
+        color: var(--primary-color);
+    }
+    
+    .job-card-description {
+        margin-bottom: 15px;
+        color: #666;
+        line-height: 1.5;
+        font-size: small;
+    }
+    
+    .job-card-actions {
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .btn-primary, .btn-secondary {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: var(--text-light);
+    }
+    
+    .btn-secondary {
+        background-color: var(--secondary-color);
+        color: var(--text-light);
+    }
+    
+    .pagination-container {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .pagination {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .pagination-button {
+        text-decoration: none;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .no-jobs-message {
+        grid-column: 1 / -1;
+        text-align: center;
+        color: #666;
+        padding: 20px;
+    }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchForm = document.getElementById('job-search-form');
+        const jobListingsContainer = document.getElementById('job-listings-container');
+        const paginationContainer = document.getElementById('pagination-container');
+        const jobLevelFilter = document.getElementById('job-level-filter');
+        const employmentTypeFilter = document.getElementById('employment-type-filter');
+    
+        // Leverage Django-provided job data
+        const jobsData = JSON.parse(document.getElementById('jobs-data').textContent);
+    
+        function populateFilters() {
+            const jobLevels = [
+                'Entry Level', 
+                'Mid-Senior Level', 
+                'Senior Level'
+            ];
+            
+            const employmentTypes = [
+                'Full-time', 
+                'Part-time', 
+                'Contract', 
+                'Internship'
+            ];
+    
+            jobLevels.forEach(level => {
+                const option = document.createElement('option');
+                option.value = level;
+                option.textContent = level;
+                jobLevelFilter.appendChild(option);
+            });
+    
+            employmentTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                employmentTypeFilter.appendChild(option);
+            });
+        }
+    
+        function renderJobCard(job) {
+            const jobCard = document.createElement('div');
+            jobCard.classList.add('job-card');
+            jobCard.innerHTML = `
+                <div class="job-card-header">
+                    <div class="job-card-title-section">
+                        <h2 class="job-card-title">${job.title}</h2>
+                        <p class="job-card-company">${job.company} | ${job.location}</p>
+                    </div>
+                    <span class="job-card-level-badge">${job.job_level}</span>
+                </div>
+    
+                <div class="job-card-details">
+                    <div class="job-card-detail">
+                        <span class="job-card-detail-label">Employment:</span>
+                        <span class="job-card-detail-value">${job.employment_type}</span>
+                    </div>
+                    <div class="job-card-detail">
+                        <span class="job-card-detail-label">Salary:</span>
+                        <span class="job-card-detail-value">$${parseFloat(job.salary).toLocaleString()}</span>
+                    </div>
+                    <div class="job-card-detail">
+                        <span class="job-card-detail-label">Deadline:</span>
+                        <span class="job-card-detail-value">${new Date(job.application_deadline).toLocaleDateString()}</span>
+                    </div>
+                    <div class="job-card-detail">
+                        <span class="job-card-detail-label">Education:</span>
+                        <span class="job-card-detail-value">${job.education}</span>
+                    </div>
+                </div>
+    
+                <p class="job-card-description">${job.description}</p>
+    
+                <div class="job-card-actions">
+                    <button class="job-card-action-button job-card-apply-button">Apply Now</button>
+                    <button class="job-card-action-button job-card-save-button">Save Job</button>
+                </div>
+            `;
+            return jobCard;
+        }
+    
+        function renderJobListings(filteredJobs, page = 1, itemsPerPage = 6) {
+            jobListingsContainer.innerHTML = '';
+            
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedJobs = filteredJobs.slice(startIndex, endIndex);
+    
+            paginatedJobs.forEach(job => {
+                const jobCard = renderJobCard(job);
+                jobListingsContainer.appendChild(jobCard);
+            });
+    
+            renderPagination(filteredJobs.length, page, itemsPerPage);
+        }
+    
+        function renderPagination(totalItems, currentPage, itemsPerPage) {
+            paginationContainer.innerHTML = '';
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+    
+            if (totalPages > 1) {
+                const paginationFragment = document.createDocumentFragment();
+                
+                // Previous button
+                if (currentPage > 1) {
+                    const prevButton = document.createElement('button');
+                    prevButton.textContent = 'Previous';
+                    prevButton.classList.add('pagination-button');
+                    prevButton.addEventListener('click', () => filterAndRenderJobs(currentPage - 1));
+                    paginationFragment.appendChild(prevButton);
+                }
+    
+                // Page numbers
+                for (let i = 1; i <= totalPages; i++) {
+                    const pageButton = document.createElement('button');
+                    pageButton.textContent = i;
+                    pageButton.classList.add('pagination-button');
+                    if (i === currentPage) pageButton.classList.add('pagination-button-active');
+                    pageButton.addEventListener('click', () => filterAndRenderJobs(i));
+                    paginationFragment.appendChild(pageButton);
+                }
+    
+                // Next button
+                if (currentPage < totalPages) {
+                    const nextButton = document.createElement('button');
+                    nextButton.textContent = 'Next';
+                    nextButton.classList.add('pagination-button');
+                    nextButton.addEventListener('click', () => filterAndRenderJobs(currentPage + 1));
+                    paginationFragment.appendChild(nextButton);
+                }
+    
+                paginationContainer.appendChild(paginationFragment);
+            }
+        }
+    
+        function filterAndRenderJobs(page = 1) {
+            const searchQuery = document.getElementById('search-input').value.toLowerCase();
+            const jobLevel = jobLevelFilter.value;
+            const employmentType = employmentTypeFilter.value;
+    
+            const filteredJobs = jobsData.filter(job => {
+                const matchesSearch = job.title.toLowerCase().includes(searchQuery) || 
+                                      job.company.toLowerCase().includes(searchQuery);
+                const matchesJobLevel = !jobLevel || job.job_level === jobLevel;
+                const matchesEmploymentType = !employmentType || job.employment_type === employmentType;
+    
+                return matchesSearch && matchesJobLevel && matchesEmploymentType;
+            });
+    
+            renderJobListings(filteredJobs, page);
+        }
+    
+        // Initial setup
+        populateFilters();
+        filterAndRenderJobs();
+    
+        // Event listeners
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            filterAndRenderJobs();
+        });
+    
+        jobLevelFilter.addEventListener('change', filterAndRenderJobs);
+        employmentTypeFilter.addEventListener('change', filterAndRenderJobs);
+    });
+      
+</script>
+
+
+
+{% endblock %}
